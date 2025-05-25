@@ -1,5 +1,7 @@
 import express from "express";
-import multer from "multer";
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+const multer = require('multer');
 import { addFood, listFood, removeFood } from "../controllers/foodController.js";
 import { verifyToken } from "../middleware/auth.js";
 import { isAdmin } from "../middleware/admin.js";
