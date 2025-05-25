@@ -1,0 +1,126 @@
+.place-order{
+    display: flex;
+    margin: 50px 150px;
+    gap: 150px;
+}
+.place-order-left{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.place-order-left .title{
+    font-size: 24px;
+    font-weight: 600;
+}
+.place-order-left input{
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+.multi-field{
+    display: flex;
+    gap: 20px;
+}
+.multi-field input{
+    flex: 1;
+}
+.place-order-right{
+    width: 100%;
+    max-width: max(40%,500px);
+}
+.place-order .cart-total{
+    width: 350px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+.place-order .cart-total h2{
+    font-size: 20px;
+    margin-bottom: 20px;
+}
+.place-order .cart-total-detials{
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+}
+.place-order .cart-total hr{
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 10px 0;
+}
+.place-order .cart-total button{
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 4px;
+    background-color: #ff4e4e;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.3s;
+}
+.place-order .cart-total button:hover{
+    background-color: #ff3333;
+}
+.review-cart-button{
+    background-color: #4a90e2 !important;
+    margin-bottom: 10px !important;
+}
+.review-cart-button:hover{
+    background-color: #357abd !important;
+}
+
+/* Tablet Responsiveness */
+@media (max-width: 1024px) {
+    .place-order {
+        margin: 30px 50px;
+        gap: 50px;
+    }
+    
+    .place-order .cart-total {
+        width: 100%;
+    }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .place-order {
+        flex-direction: column;
+        margin: 20px;
+        gap: 30px;
+    }
+
+    .place-order-right {
+        max-width: 100%;
+    }
+
+    .multi-field {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .place-order-left .title {
+        font-size: 20px;
+    }
+
+    .place-order .cart-total {
+        width: 100%;
+        max-width: none;
+    }
+}
+
+/* Small Mobile Devices */
+@media (max-width: 480px) {
+    .place-order {
+        margin: 10px;
+    }
+
+    .place-order-left input,
+    .place-order .cart-total button {
+        padding: 8px;
+        font-size: 14px;
+    }
+}
