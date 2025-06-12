@@ -19,23 +19,29 @@ const port = process.env.PORT || 4001;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// CORS configuration
-const corsOptions = {
-  origin: [
-    'https://lively-churros-885ec1.netlify.app',
-    'http://localhost:5173',
-    'http://localhost:3000'
-  ],
+// Enable CORS for all routes
+app.use(cors({
+  origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
   credentials: true,
   optionsSuccessStatus: 200
-};
+}));
+
+// Additional CORS headers for all responses
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Origin, Accept');
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  next();
+});
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors(corsOptions));
 
 // Serve static files from the uploads directory
 app.use('/images', express.static(path.join(__dirname, 'uploads')));
