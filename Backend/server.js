@@ -19,22 +19,35 @@ const port = process.env.PORT || 4001;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// CORS configuration
+const corsOptions = {
+  origin: [
+    'https://lively-churros-885ec1.netlify.app',
+    'http://localhost:5173',
+    'http://localhost:3000'
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors());
+app.use(cors(corsOptions));
 
 // Serve static files from the uploads directory
 app.use('/images', express.static(path.join(__dirname, 'uploads')));
 
 // Routes
-app.use('/api/user', userRouter);
 app.use('/api/food', foodRouter);
+app.use('/api/user', userRouter);
 app.use('/api/cart', cartRouter);
-app.use('/api/test', testTokenRouter);
+app.use('/api/test-token', testTokenRouter);
 app.use('/api/order', orderRouter);
 
-// Connect to DB
+// Connect to MongoDB
 connectDB();
 
 app.get('/', (req, res) => {
