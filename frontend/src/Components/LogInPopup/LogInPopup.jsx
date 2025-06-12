@@ -28,44 +28,55 @@ const LogInPopup = ({ setShowLogin }) => {
 
   const onLogin = async (event) => {
     event.preventDefault();
-    console.log("🐞 onLogin function is running");
+    console.log("🔍 Debug - Context URL:", url);
+    console.log("🔍 Debug - Current State:", currentState);
+    console.log("🔍 Debug - Form Data:", data);
 
-    let newUrl = url.endsWith('/') ? url : url + '/';
-    newUrl += currentState === "Login" ? "api/user/login" : "api/user/register";
+    const baseUrl = url.endsWith('/') ? url.slice(0, -1) : url;
+    const endpoint = currentState === "Login" ? "/api/user/login" : "/api/user/register";
+    const fullUrl = baseUrl + endpoint;
 
     const payload = currentState === "Login"
       ? { email: data.email, password: data.password }
       : data;
 
-    console.log("POST to:", newUrl, "with data:", payload);
+    console.log("📡 Making request to:", fullUrl);
+    console.log("📦 With payload:", payload);
 
     try {
-      const response = await axios.post(newUrl, payload);
-      console.log("✅ Login response:", response.data);
+      console.log("🚀 Starting request...");
+      const response = await axios.post(fullUrl, payload, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      console.log("✅ Full response:", response);
+      console.log("📄 Response data:", response.data);
 
       if (response.data.success && response.data.token) {
-        console.log("✅ Got token:", response.data.token);
-        // First store in localStorage
+        console.log("🎉 Login successful! Token:", response.data.token);
         localStorage.setItem("token", response.data.token);
-        // Then update context
         setToken(response.data.token);
-        // Close the login popup
         setShowLogin(false);
       } else {
-        console.warn("⚠️ Login failed:", response.data);
+        console.warn("⚠️ Login failed - Server response:", response.data);
         alert(response.data.message || "Login failed.");
       }
     } catch (error) {
-      console.error("❌ Login error:", error);
+      console.error("❌ Login error - Full error object:", error);
       if (error.response) {
-        console.error("🔍 Backend responded with:", error.response.data);
+        console.error("🔍 Server response:", {
+          status: error.response.status,
+          data: error.response.data,
+          headers: error.response.headers
+        });
         alert(error.response.data.message || "Login failed (server responded).");
       } else if (error.request) {
-        console.error("📡 No response from backend:", error.request);
-        alert("No response from server. Check your backend.");
+        console.error("📡 No response received - Request details:", error.request);
+        alert("No response from server. Please try again.");
       } else {
-        console.error("❗ Unexpected error:", error.message);
-        alert("Unexpected login error.");
+        console.error("❗ Error setting up request:", error.message);
+        alert("Unable to connect to server. Please try again.");
       }
     }
   };
