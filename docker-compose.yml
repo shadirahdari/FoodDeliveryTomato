@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - food-network
+
+  backend:
+    build: 
+      context: ./Backend
+      dockerfile: Dockerfile
+    ports:
+      - "4001:4001"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/food-delivery
+      - JWT_SECRET=mysecretkey123
+    depends_on:
+      - mongodb
+    networks:
+      - food-network
+
+  seed:
+    build:
+      context: ./Backend
+      dockerfile: seed.Dockerfile
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/food-delivery
+    depends_on:
+      - mongodb
+    networks:
+      - food-network
+    restart: "no"
+
+networks:
+  food-network:
+    driver: bridge
+
+volumes:
+  mongodb_data: 

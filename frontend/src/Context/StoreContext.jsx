@@ -5,17 +5,18 @@ export const StoreContext = createContext(null);
 
 const StoreContextProvider = (props) => {
   const [cartItems, setCartItem] = useState({});
-  const url = "http://localhost:4001";
+  const url = import.meta.env.VITE_API_URL || "http://localhost:4001";
   const [token, setToken] = useState(() => localStorage.getItem("token") || "");
   const [food_list, setFoodList] = useState([]);
 
   // Modified token setter to always update localStorage
   const updateToken = (newToken) => {
-    setToken(newToken);
-    if (newToken) {
+    if (newToken && newToken !== "null" && newToken !== "undefined") {
       localStorage.setItem("token", newToken);
+      setToken(newToken);
     } else {
       localStorage.removeItem("token");
+      setToken("");
     }
   };
 
@@ -24,6 +25,7 @@ const StoreContextProvider = (props) => {
     setCartItem({});
     localStorage.removeItem('savedCartItems');
     localStorage.removeItem('savedOrderData');
+    localStorage.removeItem('paymentSuccess'); // Clear payment success flag
   };
 
   const addToCart = (itemId) => {
@@ -71,7 +73,16 @@ const StoreContextProvider = (props) => {
       return;
     }
 
-    // Check for saved cart state first
+    // Only restore from localStorage if there was no successful payment
+    const paymentSuccess = localStorage.getItem('paymentSuccess');
+    if (paymentSuccess === 'true') {
+      // Clear the success flag and don't restore cart
+      localStorage.removeItem('paymentSuccess');
+      clearCart();
+      return;
+    }
+
+    // Check for saved cart state
     const savedCartItems = localStorage.getItem('savedCartItems');
     if (savedCartItems) {
       console.log('Restoring saved cart state');
@@ -109,14 +120,14 @@ const StoreContextProvider = (props) => {
   useEffect(() => {
     const validateToken = async () => {
       const storedToken = localStorage.getItem("token");
-      if (!storedToken) {
+      if (!storedToken || storedToken === "null" || storedToken === "undefined") {
         updateToken("");
         return;
       }
 
       try {
         // Make a request to verify the token
-        await axios.get(`${url}/api/food/list`, {
+        await axios.get(`${url}/api/user/verify-token`, {
           headers: { Authorization: `Bearer ${storedToken}` }
         });
         updateToken(storedToken);

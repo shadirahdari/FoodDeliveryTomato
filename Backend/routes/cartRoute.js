@@ -1,11 +1,11 @@
 import express from "express"
 import { addToCart, removeFromCart, getCart, clearCart } from "../controllers/cardController.js"
-import authMiddleware from "../middleware/auth.js"
+import { verifyToken } from "../middleware/auth.js"
 
 const cartRouter = express.Router()
 
 // All cart routes should be protected
-cartRouter.use(authMiddleware);
+cartRouter.use(verifyToken);
 
 // Cart routes
 cartRouter.post("/add", addToCart)

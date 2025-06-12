@@ -56,17 +56,21 @@ const Order = () => {
   const updateOrderStatus = async (orderId, newStatus) => {
     const token = localStorage.getItem('token');
     try {
+      console.log('Updating order status:', { orderId, newStatus, token });
       await axios.patch(`http://localhost:4001/api/order/${orderId}/status`, 
-        { status: newStatus },
+        { status: newStatus.toLowerCase() },
         {
           headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
           }
         }
       );
       fetchOrders(); // Refresh orders after update
     } catch (err) {
       console.error('Error updating order status:', err);
+      console.error('Response:', err.response?.data);
+      console.error('Status:', err.response?.status);
       alert(err.response?.data?.message || 'Failed to update order status');
     }
   };
@@ -92,7 +96,8 @@ const Order = () => {
   };
 
   const getStatusColor = (status) => {
-    switch (status) {
+    const normalizedStatus = status.toLowerCase();
+    switch (normalizedStatus) {
       case 'pending':
         return 'status-pending';
       case 'processing':
@@ -104,7 +109,7 @@ const Order = () => {
       case 'cancelled':
         return 'status-cancelled';
       default:
-        return '';
+        return 'status-processing';
     }
   };
 
@@ -172,7 +177,7 @@ const Order = () => {
                 <td>
                   <div className="action-buttons">
                     <select
-                      value={order.status}
+                      value={order.status.toLowerCase()}
                       onChange={(e) => updateOrderStatus(order._id, e.target.value)}
                       className="status-select"
                     >

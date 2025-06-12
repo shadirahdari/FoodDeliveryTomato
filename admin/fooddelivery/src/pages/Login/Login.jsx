@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Login.css';
+import config from '../../config';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -23,7 +24,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post('http://localhost:4001/api/user/login', formData, {
+      const response = await axios.post(`${config.apiUrl}/api/user/login`, formData, {
         headers: {
           'Content-Type': 'application/json',
           'x-admin-request': 'true'

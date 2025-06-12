@@ -38,25 +38,25 @@ const LogInPopup = ({ setShowLogin }) => {
       : data;
 
     console.log("POST to:", newUrl, "with data:", payload);
-    console.log("🚨 About to send login request...");
 
     try {
       const response = await axios.post(newUrl, payload);
-      console.log("✅ Login response FULL:", response);
+      console.log("✅ Login response:", response.data);
 
-      if (response.status === 200 && response.data.token) {
+      if (response.data.success && response.data.token) {
         console.log("✅ Got token:", response.data.token);
-        setToken(response.data.token);
+        // First store in localStorage
         localStorage.setItem("token", response.data.token);
+        // Then update context
+        setToken(response.data.token);
+        // Close the login popup
         setShowLogin(false);
       } else {
-        console.warn("⚠️ Login failed or token missing:", response.data);
+        console.warn("⚠️ Login failed:", response.data);
         alert(response.data.message || "Login failed.");
       }
-
     } catch (error) {
       console.error("❌ Login error:", error);
-
       if (error.response) {
         console.error("🔍 Backend responded with:", error.response.data);
         alert(error.response.data.message || "Login failed (server responded).");
@@ -95,6 +95,7 @@ const LogInPopup = ({ setShowLogin }) => {
             value={data.email}
             placeholder="Your email"
             required
+            autoComplete="username"
           />
           <input
             type="password"
@@ -103,6 +104,7 @@ const LogInPopup = ({ setShowLogin }) => {
             value={data.password}
             placeholder="Password"
             required
+            autoComplete="current-password"
           />
         </div>
         <button type='submit'>

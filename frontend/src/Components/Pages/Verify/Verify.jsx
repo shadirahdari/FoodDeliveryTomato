@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { StoreContext } from '../../../Context/StoreContext';
 import axios from 'axios';
@@ -10,29 +10,39 @@ const Verify = () => {
   const { token, setToken, loadCartData, clearCart, url } = useContext(StoreContext);
   const success = searchParams.get('success');
   const orderId = searchParams.get('orderId');
+  const [isProcessing, setIsProcessing] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const initializeVerification = async () => {
-      // Log the URL parameters and token status
-      console.log('Verification Status:', {
-        success,
-        orderId,
-        hasToken: !!token,
-        fullUrl: window.location.href
-      });
-
-      // Ensure token is still in localStorage
-      const storedToken = localStorage.getItem('token');
-      if (storedToken && !token) {
-        console.log('Restoring token from localStorage');
-        setToken(storedToken);
-      }
-
-      const currentToken = storedToken || token;
-
       try {
+        // Log the URL parameters and token status
+        console.log('Verification Status:', {
+          success,
+          orderId,
+          hasToken: !!token,
+          fullUrl: window.location.href
+        });
+
+        // Ensure token is still in localStorage and context
+        const storedToken = localStorage.getItem('token');
+        if (!token && storedToken) {
+          console.log('Restoring token from localStorage');
+          setToken(storedToken);
+          // Wait a bit for the token to be set in context
+          await new Promise(resolve => setTimeout(resolve, 100));
+        }
+
+        const currentToken = storedToken || token;
+        if (!currentToken) {
+          throw new Error('No authentication token found');
+        }
+
         if (success === 'true') {
           console.log('Payment successful, clearing cart...');
+          
+          // Set payment success flag before clearing cart
+          localStorage.setItem('paymentSuccess', 'true');
           
           // Clear cart in backend first
           try {
@@ -43,47 +53,48 @@ const Verify = () => {
               }
             });
             console.log('Backend cart cleared successfully');
-          } catch (error) {
-            console.error('Error clearing backend cart:', error);
-          }
-
-          // Clear frontend cart
-          clearCart();
-          
-          setTimeout(() => {
-            console.log('Payment successful, navigating to home...');
-            navigate('/');
-          }, 3000);
-        } else {
-          console.log('Payment cancelled/failed, restoring cart...');
-          // Just reload cart data from backend to restore state
-          try {
-            const cartResponse = await axios.post(`${url}/api/cart/get`, {}, {
-              headers: {
-                Authorization: `Bearer ${currentToken}`,
-                'Content-Type': 'application/json'
+            
+            // Clear frontend cart
+            clearCart();
+            
+            // Update order status to processing
+            await axios.patch(`${url}/api/order/${orderId}/status`, 
+              { status: 'processing' },
+              {
+                headers: {
+                  Authorization: `Bearer ${currentToken}`,
+                  'Content-Type': 'application/json'
+                }
               }
-            });
-            console.log('Cart data restored:', cartResponse.data);
+            );
             
             setTimeout(() => {
+              setIsProcessing(false);
+              navigate('/');
+            }, 3000);
+          } catch (error) {
+            console.error('Error in success flow:', error);
+            setError(error.message);
+            setIsProcessing(false);
+          }
+        } else {
+          console.log('Payment cancelled/failed, restoring cart...');
+          try {
+            await loadCartData(currentToken);
+            setTimeout(() => {
+              setIsProcessing(false);
               navigate('/cart');
             }, 3000);
           } catch (error) {
             console.error('Error restoring cart:', error);
-            setTimeout(() => {
-              navigate('/cart');
-            }, 3000);
+            setError(error.message);
+            setIsProcessing(false);
           }
         }
       } catch (error) {
         console.error('Error during verification:', error);
-        // If there's an error, try to restore cart and redirect
-        try {
-          await loadCartData(currentToken);
-        } catch (loadError) {
-          console.error('Error loading cart data:', loadError);
-        }
+        setError(error.message);
+        setIsProcessing(false);
         setTimeout(() => {
           navigate(success === 'true' ? '/' : '/cart');
         }, 3000);
@@ -92,6 +103,18 @@ const Verify = () => {
 
     initializeVerification();
   }, [success, navigate, orderId, token, setToken, loadCartData, clearCart, url]);
+
+  if (error) {
+    return (
+      <div className="verify-container">
+        <div className="verify-failed">
+          <h2>Verification Error</h2>
+          <p>{error}</p>
+          <p>Redirecting back...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="verify-container">
@@ -106,14 +129,14 @@ const Verify = () => {
           <h2>Payment Successful!</h2>
           <p>Your order has been placed successfully.</p>
           <p>Order ID: {orderId}</p>
-          <p>Redirecting to home page...</p>
+          <p>{isProcessing ? 'Processing your order...' : 'Redirecting to home page...'}</p>
         </div>
       ) : (
         <div className="verify-failed">
           <h2>Payment Cancelled</h2>
           <p>Your payment was cancelled.</p>
           <p>Your cart has been preserved.</p>
-          <p>Redirecting back to cart...</p>
+          <p>{isProcessing ? 'Restoring your cart...' : 'Redirecting back to cart...'}</p>
         </div>
       )}
     </div>
