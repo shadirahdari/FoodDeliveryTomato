@@ -8,7 +8,15 @@ export default defineConfig({
     outDir: 'build'
   },
   server: {
-    port: 3000
+    port: 3000,
+    proxy: {
+      '/api': {
+        target: 'https://fooddeliverytomato-2.onrender.com',
+        changeOrigin: true,
+        secure: false,
+        rewrite: (path) => path
+      }
+    }
   },
   resolve: {
     alias: {

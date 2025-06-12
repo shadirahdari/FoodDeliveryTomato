@@ -1,5 +1,5 @@
 const config = {
-  apiUrl: import.meta.env.VITE_API_URL || 'https://fooddeliverytomato-2.onrender.com'
+  apiUrl: ''  // Empty string means it will use relative paths
 };
 
 export default config; 
