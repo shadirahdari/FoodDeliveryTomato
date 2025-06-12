@@ -2,6 +2,7 @@ import dotenv from 'dotenv';
 dotenv.config(); 
 
 import express from 'express';
+import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { connectDB } from './config/db.js';
@@ -17,6 +18,17 @@ const port = process.env.PORT || 4001;
 // Get directory name in ES module
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
+// CORS configuration
+app.use(cors({
+  origin: 'https://lively-churros-885ec1.netlify.app',
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
+
+// Handle preflight requests
+app.options('*', cors());
 
 // Basic middleware
 app.use(express.json());

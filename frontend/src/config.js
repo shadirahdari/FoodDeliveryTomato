@@ -1,5 +1,5 @@
 const config = {
-  apiUrl: ''  // Empty string means it will use relative paths
+  apiUrl: 'https://fooddeliverytomato-2.onrender.com'
 };
 
 export default config; 
