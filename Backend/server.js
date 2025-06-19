@@ -19,11 +19,11 @@ const port = process.env.PORT || 4001;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// CORS configuration
+// CORS configuration - More permissive for development
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:3000', 'https://lively-churros-885ec1.netlify.app'],
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  origin: true, // Allow all origins temporarily
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-admin-request'],
   credentials: true
 }));
 
