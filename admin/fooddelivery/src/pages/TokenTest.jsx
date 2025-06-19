@@ -17,7 +17,8 @@ const TokenTest = () => {
 
   const checkToken = async () => {
     try {
-      const response = await axios.get('http://localhost:4001/api/user/verify-token', {
+      const token = localStorage.getItem('token');
+      const response = await axios.get('https://fooddeliverytomato-2.onrender.com/api/user/verify-token', {
         headers: {
           Authorization: `Bearer ${token}`
         }

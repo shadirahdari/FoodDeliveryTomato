@@ -13,11 +13,9 @@ const Order = () => {
   }, []);
 
   const fetchOrders = async () => {
-    const token = localStorage.getItem('token');
     try {
-      setLoading(true);
-      console.log("🔍 Fetching orders with token:", token);
-      const response = await axios.get('http://localhost:4001/api/order/all', {
+      const token = localStorage.getItem('token');
+      const response = await axios.get('https://fooddeliverytomato-2.onrender.com/api/order/all', {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -57,7 +55,7 @@ const Order = () => {
     const token = localStorage.getItem('token');
     try {
       console.log('Updating order status:', { orderId, newStatus, token });
-      await axios.patch(`http://localhost:4001/api/order/${orderId}/status`, 
+      await axios.patch(`https://fooddeliverytomato-2.onrender.com/api/order/${orderId}/status`, 
         { status: newStatus.toLowerCase() },
         {
           headers: {
@@ -82,7 +80,7 @@ const Order = () => {
 
     const token = localStorage.getItem('token');
     try {
-      await axios.delete(`http://localhost:4001/api/order/${orderId}`, {
+      await axios.delete(`https://fooddeliverytomato-2.onrender.com/api/order/${orderId}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }

@@ -5,7 +5,7 @@ import axios from 'axios';
 const List = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const url = "http://localhost:4001";
+  const url = "https://fooddeliverytomato-2.onrender.com";
 
   const fetchItems = async () => {
     try {

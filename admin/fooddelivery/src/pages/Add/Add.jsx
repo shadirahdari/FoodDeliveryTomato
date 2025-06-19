@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom'
 
 const Add = () => {
   const navigate = useNavigate()
-  const url = "http://localhost:4001"
+  const url = "https://fooddeliverytomato-2.onrender.com"
   const [image, setImage] = useState(false)
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState({
