@@ -21,7 +21,7 @@ const __dirname = path.dirname(__filename);
 
 // CORS configuration
 app.use(cors({
-  origin: 'https://lively-churros-885ec1.netlify.app',
+  origin: ['http://localhost:5173', 'http://localhost:3000', 'https://lively-churros-885ec1.netlify.app'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true
