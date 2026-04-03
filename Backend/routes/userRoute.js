@@ -1,5 +1,5 @@
 import express from "express"
-import { loginUser, registerUser } from "../controllers/userController.js"
+import { loginUser, registerUser, listUsers, deleteUser } from "../controllers/userController.js"
 import { verifyToken } from "../middleware/auth.js"
 import { isAdmin } from "../middleware/admin.js"
 import userModel from "../models/userModel.js"
@@ -38,5 +38,8 @@ userRouter.get("/verify-token", verifyToken, async (req, res) => {
     });
   }
 });
+
+userRouter.get("/list", verifyToken, isAdmin, listUsers);
+userRouter.delete("/:id", verifyToken, isAdmin, deleteUser);
 
 export default userRouter;

@@ -1,0 +1,79 @@
+.users-container {
+  padding: 20px;
+}
+
+.users-container h2 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.users-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  font-size: 18px;
+  color: #666;
+}
+
+.users-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 20px;
+}
+
+.user-card {
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s;
+}
+
+.user-card:hover {
+  transform: translateY(-2px);
+}
+
+.user-info {
+  padding: 20px;
+}
+
+.user-info h3 {
+  margin: 0 0 10px 0;
+  color: #333;
+  font-size: 18px;
+}
+
+.user-email {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.user-role {
+  color: #ff4d4d;
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.user-date {
+  color: #888;
+  font-size: 12px;
+  margin-bottom: 15px;
+}
+
+.delete-btn {
+  background-color: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  width: 100%;
+}
+
+.delete-btn:hover {
+  background-color: #ff3333;
+}

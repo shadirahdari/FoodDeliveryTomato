@@ -5,6 +5,7 @@ import Order from './pages/Order/Order'
 // import { ToastContainer} from 'react-toastify';
 import Add from './pages/Add/Add'
 import List from './pages/List/List'
+import Users from './pages/Users/Users'
 import Login from './pages/Login/Login'
 import Sidebar from './components/sidebar/Sidebar'
 import TokenTest from './pages/TokenTest'
@@ -54,6 +55,11 @@ const App = () => {
         <Route path="/list" element={
           <ProtectedRoute>
             <List />
+          </ProtectedRoute>
+        }/>
+        <Route path="/users" element={
+          <ProtectedRoute>
+            <Users />
           </ProtectedRoute>
         }/>
         <Route path="/order" element={

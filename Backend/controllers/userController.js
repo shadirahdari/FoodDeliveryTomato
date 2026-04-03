@@ -73,4 +73,31 @@ const loginUser = async (req, res) => {
   }
 };
 
-export { registerUser, loginUser };
+// List Users (Admin only)
+const listUsers = async (req, res) => {
+  try {
+    const users = await userModel.find({}, { password: 0 }); // Exclude password field
+    res.json({ success: true, data: users });
+  } catch (error) {
+    console.error("❌ List users error:", error);
+    res.json({ success: false, message: "Failed to fetch users" });
+  }
+};
+
+// Delete User (Admin only)
+const deleteUser = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const user = await userModel.findByIdAndDelete(id);
+    if (!user) {
+      return res.json({ success: false, message: "User not found" });
+    }
+    res.json({ success: true, message: "User deleted successfully" });
+  } catch (error) {
+    console.error("❌ Delete user error:", error);
+    res.json({ success: false, message: "Failed to delete user" });
+  }
+};
+
+export { registerUser, loginUser, listUsers, deleteUser };
