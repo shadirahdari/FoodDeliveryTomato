@@ -3,10 +3,11 @@ import './Add.css'
 import { assets } from '../../assets/asset'
 import axios from "axios"
 import { useNavigate } from 'react-router-dom'
+import config from '../../config'
 
 const Add = () => {
   const navigate = useNavigate()
-  const url = "https://fooddeliverytomato-2.onrender.com"
+  const url = config.apiUrl
   const [image, setImage] = useState(false)
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState({
