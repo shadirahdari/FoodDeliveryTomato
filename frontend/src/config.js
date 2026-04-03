@@ -1,5 +1,5 @@
 const config = {
-  apiUrl: 'https://fooddeliverytomato-2.onrender.com'
+  apiUrl: 'http://localhost:4001'
 };
 
 export default config; 
