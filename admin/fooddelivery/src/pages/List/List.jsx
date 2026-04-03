@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import './List.css';
 import axios from 'axios';
+import config from '../../config';
 
 const List = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const url = "https://fooddeliverytomato-2.onrender.com";
+  const url = config.apiUrl;
 
   const fetchItems = async () => {
     try {

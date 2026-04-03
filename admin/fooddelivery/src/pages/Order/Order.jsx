@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './Order.css';
+import config from '../../config';
 
 const Order = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState('all');
+  const url = config.apiUrl;
 
   useEffect(() => {
     fetchOrders();
@@ -15,7 +17,7 @@ const Order = () => {
   const fetchOrders = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get('https://fooddeliverytomato-2.onrender.com/api/order/all', {
+      const response = await axios.get(`${url}/api/order/all`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -55,7 +57,7 @@ const Order = () => {
     const token = localStorage.getItem('token');
     try {
       console.log('Updating order status:', { orderId, newStatus, token });
-      await axios.patch(`https://fooddeliverytomato-2.onrender.com/api/order/${orderId}/status`, 
+      await axios.patch(`${url}/api/order/${orderId}/status`, 
         { status: newStatus.toLowerCase() },
         {
           headers: {
@@ -80,7 +82,7 @@ const Order = () => {
 
     const token = localStorage.getItem('token');
     try {
-      await axios.delete(`https://fooddeliverytomato-2.onrender.com/api/order/${orderId}`, {
+      await axios.delete(`${url}/api/order/${orderId}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
