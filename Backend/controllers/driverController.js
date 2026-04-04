@@ -239,6 +239,40 @@ const unassignOrderFromDriver = async (req, res) => {
   }
 };
 
+// Create new driver
+const createDriver = async (req, res) => {
+  const { name, email, phone, password, vehicleType, licenseNumber } = req.body;
+
+  try {
+    // Check if driver already exists
+    const existingDriver = await driverModel.findOne({ email });
+    if (existingDriver) {
+      return res.json({ success: false, message: "Driver with this email already exists" });
+    }
+
+    // Hash password
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    // Create new driver
+    const newDriver = new driverModel({
+      name,
+      email,
+      phone,
+      password: hashedPassword,
+      vehicleType: vehicleType || 'bike',
+      licenseNumber
+    });
+
+    await newDriver.save();
+
+    res.json({ success: true, message: "Driver created successfully", driver: newDriver });
+  } catch (error) {
+    console.error("Create driver error:", error);
+    res.json({ success: false, message: "Failed to create driver" });
+  }
+};
+
 export {
   driverLogin,
   updateDriverLocation,
@@ -247,5 +281,6 @@ export {
   updateOrderStatus,
   getAllDrivers,
   assignOrderToDriver,
-  unassignOrderFromDriver
+  unassignOrderFromDriver,
+  createDriver
 };

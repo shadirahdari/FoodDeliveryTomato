@@ -7,7 +7,8 @@ import {
   updateOrderStatus,
   getAllDrivers,
   assignOrderToDriver,
-  unassignOrderFromDriver
+  unassignOrderFromDriver,
+  createDriver
 } from "../controllers/driverController.js";
 import driverAuthMiddleware from "../middleware/driverAuth.js";
 import { verifyToken } from "../middleware/auth.js";
@@ -28,5 +29,6 @@ driverRouter.post("/update-order-status", driverAuthMiddleware, updateOrderStatu
 driverRouter.get("/all", verifyToken, isAdmin, getAllDrivers);
 driverRouter.post("/assign-order", verifyToken, isAdmin, assignOrderToDriver);
 driverRouter.post("/unassign-order", verifyToken, isAdmin, unassignOrderFromDriver);
+driverRouter.post("/create", verifyToken, isAdmin, createDriver);
 
 export default driverRouter;
