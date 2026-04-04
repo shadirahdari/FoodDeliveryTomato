@@ -26,6 +26,11 @@ const Sidebar = () => {
           <img src={assets.review_icon || assets.list_icon} alt="Reviews Icon" />
           <p>Reviews</p>
         </NavLink>
+
+        <NavLink to='/drivers' className="sidebar-option">
+          <img src={assets.parcel_icon} alt="Drivers Icon" />
+          <p>Drivers</p>
+        </NavLink>
         
         <NavLink to='/order' className="sidebar-option">
           <img src={assets.order_icon} alt="Order Icon" />
