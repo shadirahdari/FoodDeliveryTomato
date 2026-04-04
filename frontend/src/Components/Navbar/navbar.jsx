@@ -150,39 +150,71 @@ const OrdersModal = ({ onClose }) => {
         {!loading && !error && (
           <div className="orders-list">
             {orders.length === 0 ? (
-              <p>No orders found</p>
+              <div className="no-orders">
+                <p>No orders found</p>
+                <span>Start your first order to see it here!</span>
+              </div>
             ) : (
               orders.map(order => (
-                <div key={order._id} className="order-item">
-                  <div className="order-header">
-                    <span className="order-id">Order #{order._id.slice(-6)}</span>
-                    <span className={`order-status ${order.status.toLowerCase().replace(' ', '-')}`}>
+                <div key={order._id} className="order-card">
+                  {/* Order Header */}
+                  <div className="order-card-header">
+                    <div className="order-main-info">
+                      <h3 className="order-id">Order #{order._id.slice(-6)}</h3>
+                      <p className="order-amount">€{order.amount.toFixed(2)}</p>
+                    </div>
+                    <span className={`order-status-badge ${order.status.toLowerCase().replace(' ', '-')}`}>
                       {order.status}
                     </span>
                   </div>
-                  <div className="order-details">
-                    <p>Date: {new Date(order.date).toLocaleDateString()}</p>
-                    <p>Amount: €{order.amount.toFixed(2)}</p>
-                    <p>Payment: {order.Payment ? 'Paid' : 'Pending'}</p>
-                    {order.driverId && (
-                      <div className="driver-info">
-                        <p><strong>Assigned Driver:</strong></p>
-                        <p>Name: {order.driverId.name}</p>
-                        <p>Phone: {order.driverId.phone}</p>
-                        <p>Vehicle: {order.driverId.vehicleType}</p>
-                      </div>
-                    )}
+
+                  {/* Order Meta */}
+                  <div className="order-meta">
+                    <div className="meta-item">
+                      <span className="meta-label">Date:</span>
+                      <span className="meta-value">{new Date(order.date).toLocaleDateString()}</span>
+                    </div>
+                    <div className="meta-item">
+                      <span className="meta-label">Payment:</span>
+                      <span className="meta-value">{order.Payment ? 'Paid' : 'Pending'}</span>
+                    </div>
                   </div>
-                  <div className="order-items">
-                    <strong>Items:</strong>
-                    <ul>
+
+                  {/* Items List */}
+                  <div className="order-items-section">
+                    <h4 className="section-title">Items</h4>
+                    <div className="items-list">
                       {order.items.map((item, index) => (
-                        <li key={index}>
-                          {item.name} x {item.quantity} - €{(item.price * item.quantity).toFixed(2)}
-                        </li>
+                        <div key={index} className="item-row">
+                          <span className="item-name">{item.name} × {item.quantity}</span>
+                          <span className="item-price">€{(item.price * item.quantity).toFixed(2)}</span>
+                        </div>
                       ))}
-                    </ul>
+                    </div>
                   </div>
+
+                  {/* Driver Info */}
+                  {order.driverId && (
+                    <div className="driver-section">
+                      <h4 className="section-title">Delivery Driver</h4>
+                      <div className="driver-details">
+                        <div className="driver-row">
+                          <span className="driver-label">Name:</span>
+                          <span className="driver-value">{order.driverId.name}</span>
+                        </div>
+                        <div className="driver-row">
+                          <span className="driver-label">Phone:</span>
+                          <span className="driver-value">{order.driverId.phone}</span>
+                        </div>
+                        <div className="driver-row">
+                          <span className="driver-label">Vehicle:</span>
+                          <span className="driver-value">{order.driverId.vehicleType}</span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Action Button */}
                   {order.status !== 'cancelled' && (
                     <button 
                       className="track-order-btn"
