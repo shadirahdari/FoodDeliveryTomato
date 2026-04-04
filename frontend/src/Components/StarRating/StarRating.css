@@ -1,0 +1,37 @@
+.star-rating {
+  display: inline-flex;
+  align-items: center;
+}
+
+.star {
+  color: #ffd700;
+  font-size: 16px;
+}
+
+.star.small {
+  font-size: 12px;
+}
+
+.star.medium {
+  font-size: 16px;
+}
+
+.star.large {
+  font-size: 20px;
+}
+
+.star.filled {
+  color: #ffd700;
+}
+
+.star.empty {
+  color: #ddd;
+}
+
+.star.clickable:hover {
+  transform: scale(1.1);
+}
+
+.star-rating.readonly .star {
+  cursor: default;
+}

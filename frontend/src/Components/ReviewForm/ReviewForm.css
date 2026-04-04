@@ -1,0 +1,48 @@
+.review-form {
+  border-top: 1px solid #eee;
+  padding-top: 20px;
+  margin-top: 20px;
+}
+
+.review-form h4 {
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.rating-input, .comment-input {
+  margin-bottom: 15px;
+}
+
+.rating-input label, .comment-input label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.comment-input textarea {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  resize: vertical;
+  font-family: inherit;
+}
+
+.review-form button {
+  background-color: #ff6347;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.review-form button:hover:not(:disabled) {
+  background-color: #e5533d;
+}
+
+.review-form button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}

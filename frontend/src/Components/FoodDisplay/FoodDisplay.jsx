@@ -28,6 +28,8 @@ const FoodDisplay = ({ category }) => {
               description={item.description} 
               price={item.price} 
               image={item.image}
+              averageRating={item.averageRating}
+              totalReviews={item.totalReviews}
             />
           );
         })}
