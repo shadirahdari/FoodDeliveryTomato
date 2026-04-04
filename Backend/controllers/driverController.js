@@ -200,6 +200,45 @@ const assignOrderToDriver = async (req, res) => {
   }
 };
 
+// Unassign order from driver (admin function)
+const unassignOrderFromDriver = async (req, res) => {
+  const { orderId } = req.body;
+
+  try {
+    // Get the order to find the driver
+    const order = await orderModel.findById(orderId);
+    if (!order || !order.driverId) {
+      return res.json({ success: false, message: "Order not found or no driver assigned" });
+    }
+
+    const driverId = order.driverId;
+
+    // Update order - remove driver and set status back to processing
+    await orderModel.findByIdAndUpdate(orderId, {
+      driverId: null,
+      status: 'processing',
+      estimatedDeliveryTime: null,
+      $push: {
+        trackingUpdates: {
+          status: 'processing',
+          timestamp: new Date(),
+          message: 'Driver unassigned from order'
+        }
+      }
+    });
+
+    // Remove order from driver's assigned orders
+    await driverModel.findByIdAndUpdate(driverId, {
+      $pull: { assignedOrders: orderId }
+    });
+
+    res.json({ success: true, message: "Order unassigned from driver successfully" });
+  } catch (error) {
+    console.error("Unassign order error:", error);
+    res.json({ success: false, message: "Failed to unassign order" });
+  }
+};
+
 export {
   driverLogin,
   updateDriverLocation,
@@ -207,5 +246,6 @@ export {
   getAssignedOrders,
   updateOrderStatus,
   getAllDrivers,
-  assignOrderToDriver
+  assignOrderToDriver,
+  unassignOrderFromDriver
 };

@@ -157,20 +157,27 @@ const getAllOrders = async (req, res) => {
 const updateOrderStatus = async (req, res) => {
   try {
     const { id } = req.params;
-    const { status } = req.body;
+    const { status, driverId } = req.body;
 
-    // Validate status
-    const validStatuses = ['pending', 'processing', 'out-for-delivery', 'delivered', 'cancelled'];
-    if (!validStatuses.includes(status)) {
-      return res.status(400).json({ 
-        success: false, 
-        message: "Invalid status. Must be one of: " + validStatuses.join(', ') 
-      });
+    // Validate status if provided
+    if (status) {
+      const validStatuses = ['pending', 'processing', 'out-for-delivery', 'delivered', 'cancelled'];
+      if (!validStatuses.includes(status)) {
+        return res.status(400).json({ 
+          success: false, 
+          message: "Invalid status. Must be one of: " + validStatuses.join(', ') 
+        });
+      }
     }
+
+    // Prepare update object
+    const updateData = {};
+    if (status) updateData.status = status;
+    if (driverId !== undefined) updateData.driverId = driverId;
 
     const order = await orderModel.findByIdAndUpdate(
       id,
-      { status },
+      updateData,
       { new: true }
     );
 

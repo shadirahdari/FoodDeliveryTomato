@@ -134,3 +134,63 @@
 .delete-button:hover {
   background-color: #c82333;
 }
+
+/* Driver Management Styles */
+.driver-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 150px;
+}
+
+.assigned-driver {
+  color: #155724;
+  background-color: #d4edda;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.no-driver {
+  color: #856404;
+  background-color: #fff3cd;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.unassign-driver-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+}
+
+.unassign-driver-btn:hover {
+  background-color: #c82333;
+}
+
+.assign-driver-select {
+  padding: 4px 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  font-size: 12px;
+  cursor: pointer;
+  min-width: 120px;
+}
+
+.assign-driver-select:focus {
+  outline: none;
+  border-color: #ff6b35;
+}

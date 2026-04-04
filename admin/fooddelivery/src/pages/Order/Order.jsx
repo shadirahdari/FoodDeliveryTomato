@@ -5,6 +5,7 @@ import config from '../../config';
 
 const Order = () => {
   const [orders, setOrders] = useState([]);
+  const [drivers, setDrivers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedStatus, setSelectedStatus] = useState('all');
@@ -12,6 +13,7 @@ const Order = () => {
 
   useEffect(() => {
     fetchOrders();
+    fetchDrivers();
   }, []);
 
   const fetchOrders = async () => {
@@ -50,6 +52,23 @@ const Order = () => {
       setError(errorMessage);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchDrivers = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      const response = await axios.get(`${url}/api/driver/all`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      if (response.data.success) {
+        setDrivers(response.data.drivers);
+      }
+    } catch (err) {
+      console.error('❌ Error fetching drivers:', err);
     }
   };
 
@@ -93,6 +112,61 @@ const Order = () => {
       console.error('Error deleting order:', err);
       alert(err.response?.data?.message || 'Failed to delete order');
     }
+  };
+
+  const assignDriverToOrder = async (orderId, driverId) => {
+    const token = localStorage.getItem('token');
+    try {
+      const response = await axios.post(`${url}/api/driver/assign-order`, {
+        orderId,
+        driverId
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      if (response.data.success) {
+        alert('Driver assigned to order successfully');
+        fetchOrders(); // Refresh orders
+        fetchDrivers(); // Refresh drivers
+      }
+    } catch (err) {
+      console.error('Error assigning driver:', err);
+      alert(err.response?.data?.message || 'Failed to assign driver');
+    }
+  };
+
+  const unassignDriverFromOrder = async (orderId) => {
+    if (!window.confirm('Are you sure you want to unassign the driver from this order?')) {
+      return;
+    }
+
+    const token = localStorage.getItem('token');
+    try {
+      const response = await axios.post(`${url}/api/driver/unassign-order`, {
+        orderId
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      if (response.data.success) {
+        alert('Driver unassigned from order successfully');
+        fetchOrders(); // Refresh orders
+        fetchDrivers(); // Refresh drivers
+      }
+    } catch (err) {
+      console.error('Error unassigning driver:', err);
+      alert(err.response?.data?.message || 'Failed to unassign driver');
+    }
+  };
+
+  const getDriverName = (driverId) => {
+    if (!driverId) return 'Not Assigned';
+    const driver = drivers.find(d => d._id === driverId);
+    return driver ? driver.name : 'Unknown Driver';
   };
 
   const getStatusColor = (status) => {
@@ -153,13 +227,14 @@ const Order = () => {
               <th>Payment Method</th>
               <th>Order Date</th>
               <th>Status</th>
+              <th>Driver</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {filteredOrders.map(order => (
               <tr key={order._id}>
-                <td>{order._id}</td>
+                <td>{order._id.slice(-8)}</td>
                 <td>
                   {order.paymentDetails?.customerName || 'N/A'}
                   <br />
@@ -173,6 +248,40 @@ const Order = () => {
                 <td>{formatDate(order.date)}</td>
                 <td className={getStatusColor(order.status)}>
                   {order.status}
+                </td>
+                <td>
+                  <div className="driver-info">
+                    <span className={order.driverId ? 'assigned-driver' : 'no-driver'}>
+                      {getDriverName(order.driverId)}
+                    </span>
+                    {order.driverId ? (
+                      <button 
+                        onClick={() => unassignDriverFromOrder(order._id)}
+                        className="unassign-driver-btn"
+                        title="Unassign Driver"
+                      >
+                        ✕
+                      </button>
+                    ) : (
+                      <select
+                        onChange={(e) => {
+                          if (e.target.value) {
+                            assignDriverToOrder(order._id, e.target.value);
+                            e.target.value = ''; // Reset select
+                          }
+                        }}
+                        className="assign-driver-select"
+                        defaultValue=""
+                      >
+                        <option value="" disabled>Assign Driver</option>
+                        {drivers.filter(driver => driver.isActive).map(driver => (
+                          <option key={driver._id} value={driver._id}>
+                            {driver.name} ({driver.vehicleType})
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
                 </td>
                 <td>
                   <div className="action-buttons">

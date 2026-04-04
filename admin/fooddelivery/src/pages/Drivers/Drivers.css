@@ -239,6 +239,29 @@
   color: #28a745;
 }
 
+.order-status {
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.order-status.processing {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.order-status.pending {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+.order-status.confirmed {
+  background: #d1ecf1;
+  color: #0c5460;
+}
+
 .order-details p {
   margin: 3px 0;
   font-size: 13px;

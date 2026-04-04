@@ -11,6 +11,7 @@ import userRouter from './routes/userRoute.js';
 import foodRouter from './routes/foodRoute.js';
 import webhookRouter from './routes/webhookRoute.js';
 import driverRouter from './routes/driverRoute.js';
+import driverModel from './models/driverModel.js';
 
 dotenv.config();
 
@@ -68,8 +69,12 @@ io.on('connection', (socket) => {
 
   // Driver joins their room for location updates
   socket.on('join-driver-room', (driverId) => {
-    socket.join(`driver-${driverId}`);
-    console.log(`Driver ${driverId} joined room`);
+    try {
+      socket.join(`driver-${driverId}`);
+      console.log(`Driver ${driverId} joined room`);
+    } catch (error) {
+      console.error('Error joining driver room:', error);
+    }
   });
 
   // Handle location updates from drivers
@@ -78,7 +83,7 @@ io.on('connection', (socket) => {
 
     try {
       // Update driver location in database
-      await mongoose.model('Driver').findByIdAndUpdate(driverId, {
+      await driverModel.findByIdAndUpdate(driverId, {
         currentLocation: {
           latitude,
           longitude,
@@ -102,19 +107,27 @@ io.on('connection', (socket) => {
 
   // Customer joins order tracking room
   socket.on('join-order-tracking', (orderId) => {
-    socket.join(`order-${orderId}`);
-    console.log(`Customer joined tracking for order ${orderId}`);
+    try {
+      socket.join(`order-${orderId}`);
+      console.log(`Customer joined tracking for order ${orderId}`);
+    } catch (error) {
+      console.error('Error joining order tracking room:', error);
+    }
   });
 
   // Handle order status updates
   socket.on('order-status-update', (data) => {
     const { orderId, status, message } = data;
-    socket.to(`order-${orderId}`).emit('order-status-changed', {
-      orderId,
-      status,
-      message,
-      timestamp: new Date()
-    });
+    try {
+      socket.to(`order-${orderId}`).emit('order-status-changed', {
+        orderId,
+        status,
+        message,
+        timestamp: new Date()
+      });
+    } catch (error) {
+      console.error('Error emitting order status update:', error);
+    }
   });
 
   socket.on('disconnect', () => {
@@ -131,4 +144,7 @@ const PORT = process.env.PORT || 4001;
 server.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`🔌 Socket.io enabled for real-time tracking`);
+}).on('error', (err) => {
+  console.error('Server error:', err);
+  process.exit(1);
 }); 

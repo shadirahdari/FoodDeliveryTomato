@@ -31,24 +31,22 @@ const Drivers = () => {
   const fetchOrders = async () => {
     try {
       const token = localStorage.getItem('token');
-      const response = await axios.get(`${url}/api/order/list`, {
+      const response = await axios.get(`${url}/api/order/all`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
       if (response.data.success) {
-        // Filter orders that are confirmed but not yet assigned to a driver
-        const availableOrders = response.data.data.filter(order =>
-          order.status === 'confirmed' && !order.driverId
+        // Filter orders that can be assigned to drivers (processing, pending, or confirmed, no driver assigned)
+        const availableOrders = response.data.orders.filter(order =>
+          (order.status === 'processing' || order.status === 'pending' || order.status === 'confirmed') && !order.driverId
         );
         setOrders(availableOrders);
       }
     } catch (error) {
       console.error('Error fetching orders:', error);
     }
-  };
-
-  const handleAssignOrder = async () => {
+  };  const handleAssignOrder = async () => {
     if (!selectedDriver || !selectedOrder) {
       alert('Please select both a driver and an order');
       return;
@@ -117,7 +115,7 @@ const Drivers = () => {
           </div>
           <div className="stat-card">
             <h3>{orders.length}</h3>
-            <p>Pending Orders</p>
+            <p>Orders Awaiting Drivers</p>
           </div>
         </div>
       </div>
@@ -180,7 +178,7 @@ const Drivers = () => {
 
           <div className="assignment-section">
             <div className="order-selection">
-              <h4>Available Orders</h4>
+              <h4>Orders Awaiting Driver Assignment</h4>
               <div className="orders-list">
                 {orders.length === 0 ? (
                   <p className="no-orders">No pending orders available</p>
@@ -194,6 +192,9 @@ const Drivers = () => {
                       <div className="order-header">
                         <span className="order-id">#{order._id.slice(-6)}</span>
                         <span className="order-amount">${order.amount}</span>
+                        <span className={`order-status ${order.status}`}>
+                          {order.status === 'processing' ? 'Needs Confirmation' : order.status === 'pending' ? 'Pending' : 'Ready for Driver'}
+                        </span>
                       </div>
                       <div className="order-details">
                         <p><strong>Customer:</strong> {order.address?.firstName} {order.address?.lastName}</p>
