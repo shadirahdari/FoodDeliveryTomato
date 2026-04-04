@@ -125,6 +125,14 @@ const OrdersModal = ({ onClose }) => {
             </p>
             <p><strong>Order Date:</strong> {new Date(trackingOrder.date).toLocaleString()}</p>
             <p><strong>Status:</strong> <span className={`order-status ${trackingOrder.status}`}>{trackingOrder.status}</span></p>
+            {trackingOrder.driverId && (
+              <div className="driver-info">
+                <p><strong>Delivery Driver:</strong></p>
+                <p>Name: {trackingOrder.driverId.name}</p>
+                <p>Phone: {trackingOrder.driverId.phone}</p>
+                <p>Vehicle: {trackingOrder.driverId.vehicleType}</p>
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -161,6 +169,14 @@ const OrdersModal = ({ onClose }) => {
                     <p>Date: {new Date(order.date).toLocaleDateString()}</p>
                     <p>Amount: €{order.amount.toFixed(2)}</p>
                     <p>Payment: {order.Payment ? 'Paid' : 'Pending'}</p>
+                    {order.driverId && (
+                      <div className="driver-info">
+                        <p><strong>Assigned Driver:</strong></p>
+                        <p>Name: {order.driverId.name}</p>
+                        <p>Phone: {order.driverId.phone}</p>
+                        <p>Vehicle: {order.driverId.vehicleType}</p>
+                      </div>
+                    )}
                   </div>
                   <div className="order-items">
                     <strong>Items:</strong>

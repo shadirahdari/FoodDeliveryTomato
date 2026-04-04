@@ -90,7 +90,7 @@ const getOrder = async (req, res) => {
 // Get all orders for a user
 const getUserOrders = async (req, res) => {
   try {
-    const orders = await orderModel.find({ userId: req.userId }).sort({ date: -1 });
+    const orders = await orderModel.find({ userId: req.userId }).sort({ date: -1 }).populate('driverId', 'name email phone vehicleType');
     res.json({ success: true, orders });
   } catch (error) {
     console.error("❌ Error getting user orders:", error);
@@ -195,7 +195,7 @@ const updateOrderStatus = async (req, res) => {
 // Track order
 const trackOrder = async (req, res) => {
   try {
-    const order = await orderModel.findById(req.params.id);
+    const order = await orderModel.findById(req.params.id).populate('driverId', 'name email phone vehicleType');
     
     if (!order) {
       return res.status(404).json({ success: false, message: "Order not found" });
