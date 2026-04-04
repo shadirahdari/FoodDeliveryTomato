@@ -117,12 +117,7 @@ const OrdersModal = ({ onClose }) => {
 
           <div className="tracking-details">
             <h3>Delivery Details</h3>
-            <p><strong>Delivery Address:</strong></p>
-            <p>
-              {trackingOrder.address.firstName} {trackingOrder.address.lastName}<br />
-              {trackingOrder.address.street}<br />
-              {trackingOrder.address.city}, {trackingOrder.address.state} {trackingOrder.address.zipcode}
-            </p>
+            <p><strong>Delivery Address:</strong> {trackingOrder.address.firstName} {trackingOrder.address.lastName}, {trackingOrder.address.street}, {trackingOrder.address.city}, {trackingOrder.address.state} {trackingOrder.address.zipcode}</p>
             <p><strong>Order Date:</strong> {new Date(trackingOrder.date).toLocaleString()}</p>
             <p><strong>Status:</strong> <span className={`order-status ${trackingOrder.status}`}>{trackingOrder.status}</span></p>
             {trackingOrder.driverId && (
