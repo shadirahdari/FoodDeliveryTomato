@@ -46,4 +46,31 @@ const getReviewsForFood = async (req, res) => {
   }
 };
 
-export { addReview, getReviewsForFood };
+// Get all reviews (for admin)
+const getAllReviews = async (req, res) => {
+  try {
+    const reviews = await reviewModel.find({})
+      .populate('user', 'name')
+      .populate('food', 'name')
+      .sort({ date: -1 });
+    res.json({ success: true, reviews });
+  } catch (error) {
+    console.error("Get all reviews error:", error);
+    res.json({ success: false, message: "Failed to fetch reviews" });
+  }
+};
+
+// Delete a review (for admin)
+const deleteReview = async (req, res) => {
+  const { reviewId } = req.params;
+
+  try {
+    await reviewModel.findByIdAndDelete(reviewId);
+    res.json({ success: true, message: "Review deleted successfully" });
+  } catch (error) {
+    console.error("Delete review error:", error);
+    res.json({ success: false, message: "Failed to delete review" });
+  }
+};
+
+export { addReview, getReviewsForFood, getAllReviews, deleteReview };

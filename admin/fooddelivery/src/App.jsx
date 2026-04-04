@@ -7,6 +7,7 @@ import Add from './pages/Add/Add'
 import List from './pages/List/List'
 import Users from './pages/Users/Users'
 import Login from './pages/Login/Login'
+import Reviews from './pages/Reviews/Reviews'
 import Sidebar from './components/sidebar/Sidebar'
 import TokenTest from './pages/TokenTest'
 
@@ -60,6 +61,11 @@ const App = () => {
         <Route path="/users" element={
           <ProtectedRoute>
             <Users />
+          </ProtectedRoute>
+        }/>
+        <Route path="/reviews" element={
+          <ProtectedRoute>
+            <Reviews />
           </ProtectedRoute>
         }/>
         <Route path="/order" element={

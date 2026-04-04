@@ -3,7 +3,7 @@ import { createRequire } from 'module';
 const require = createRequire(import.meta.url);
 const multer = require('multer');
 import { addFood, listFood, removeFood } from "../controllers/foodController.js";
-import { addReview, getReviewsForFood } from "../controllers/reviewController.js";
+import { addReview, getReviewsForFood, getAllReviews, deleteReview } from "../controllers/reviewController.js";
 import { verifyToken } from "../middleware/auth.js";
 import { isAdmin } from "../middleware/admin.js";
 import path from 'path';
@@ -48,7 +48,9 @@ foodRouter.get("/list", listFood);
 foodRouter.delete("/:id", verifyToken, isAdmin, removeFood);
 
 // Review routes
-foodRouter.post("/review", verifyToken, addReview);
+foodRouter.get("/reviews/all", verifyToken, isAdmin, getAllReviews);
 foodRouter.get("/reviews/:foodId", getReviewsForFood);
+foodRouter.post("/review", verifyToken, addReview);
+foodRouter.delete("/review/:reviewId", verifyToken, isAdmin, deleteReview);
 
 export default foodRouter; 
