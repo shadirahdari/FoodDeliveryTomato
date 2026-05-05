@@ -296,7 +296,7 @@ const Navbar = ({ setShowLogin }) => {
           <span>Mobile App</span>
         </li>
         <li onClick={() => setMenu("Contact-Us")} className={menu === "Contact-Us" ? "active" : ""}>
-          <Link to="/contact">Contact Us</Link>
+          <Link to="/contact-us">Contact Us</Link>
         </li>
       </ul>
 
